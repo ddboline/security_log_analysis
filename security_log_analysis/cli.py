@@ -9,6 +9,9 @@ import argparse
 import sys
 import logging
 
+from security_log_analysis.security_log_parse import analyze_files
+from security_log_analysis.util import (OpenPostgreSQLsshTunnel,
+                                        create_db_engine)
 from security_log_analysis import __version__
 
 __author__ = "Daniel Boline"
@@ -37,7 +40,9 @@ def parse_args(args):
 
 def main(args):
     args = parse_args(args)
-    print("Hello World!")
+    with OpenPostgreSQLsshTunnel():
+        engine = create_db_engine()
+        print(analyze_files(engine))
     _logger.info("Script ends here")
 
 

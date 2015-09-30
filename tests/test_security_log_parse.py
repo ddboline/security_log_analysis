@@ -5,10 +5,7 @@ Created on Wed Sep 30 07:32:45 2015
 @author: ddboline
 """
 
-import pytest
-
 import datetime
-import pandas as pd
 from security_log_analysis.util import (OpenPostgreSQLsshTunnel,
                                         create_db_engine)
 from security_log_analysis.security_log_parse import (
@@ -22,8 +19,9 @@ from security_log_analysis.security_log_parse import (
                                                 analyze_files)
 
 def test_find_originating_country():
-    ccode_df = pd.read_csv('country_code_name.csv.gz', compression='gzip')
-    country_list = dict(zip(ccode_df['Code'], ccode_df['Country']))
+    with OpenPostgreSQLsshTunnel():
+        engine = create_db_engine()
+        country_list = read_country_code(engine)
 
     host = 'host-219-235-1-84.iphost.gotonets.com'
     country = find_originating_country(hostname=host,
