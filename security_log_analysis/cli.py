@@ -60,7 +60,10 @@ def analyze(data_path):
         for table in ('ssh_log', 'ssh_log_cloud', 'apache_log',
                       'apache_log_cloud'):
             plot_time_access(engine, table, table)
+        print('\nssh local remote comparison')
         local_remote_comparison(engine)
+        print('\napache local remote comparison')
+        local_remote_comparison(engine, table='local_remote_compare_apache')
 
 def run_analyze():
     return analyze(security_log_analysis.__path__[0])
