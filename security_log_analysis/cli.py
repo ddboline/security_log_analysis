@@ -1,19 +1,7 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 """
-This is a skeleton file that can serve as a starting point for a Python
-console script. To run this script uncomment the following line in the
-entry_points section in setup.cfg:
-
-    console_scripts =
-        hello_world = security_log_analysis.module:function
-
-Then run `python setup.py install` which will install the command `hello_world`
-inside your current environment.
-Besides console scripts, the header (i.e. until _logger...) of this file can
-also be used as template for Python modules.
-
-Note: This skeleton file can be safely removed if not needed!
+Command Line Interface
 """
 from __future__ import division, print_function, absolute_import
 
