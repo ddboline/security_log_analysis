@@ -34,8 +34,8 @@ def parse_args(args):
     """
     Parse command line parameters
 
-   :param args: command line parameters as list of strings
-   :return: command line parameters as:obj:`argparse.Namespace`
+    :param args: command line parameters as list of strings
+    :return: command line parameters as :obj:`argparse.Namespace`
     """
     parser = argparse.ArgumentParser(
         description="Just a Hello World demonstration")
