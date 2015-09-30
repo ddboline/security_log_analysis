@@ -54,18 +54,20 @@ def test_parse_apache_time_str():
     assert parse_apache_time_str(test) == result
 
 def test_analyze_single_file_apache():
-    result = [(datetime.datetime(2015, 9, 27, 20, 41, 44), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 41, 45), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 41, 45), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 41, 45), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 41, 46), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 43, 6), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 43, 7), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 43, 7), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 43, 7), '67.84.145.194'),
-              (datetime.datetime(2015, 9, 27, 20, 43, 39), '67.84.145.194')]
+    result = [(datetime.datetime(2015, 9, 28, 4, 36), '184.105.247.196'),
+              (datetime.datetime(2015, 9, 28, 4, 44, 15), '184.105.247.196'),
+              (datetime.datetime(2015, 9, 28, 17, 56, 51), '62.128.213.24'),
+              (datetime.datetime(2015, 9, 28, 19, 39, 58), '54.77.239.4'),
+              (datetime.datetime(2015, 9, 28, 20, 50, 46), '184.105.139.68'),
+              (datetime.datetime(2015, 9, 28, 20, 56, 31), '184.105.139.68'),
+              (datetime.datetime(2015, 9, 28, 21, 19, 20), '109.123.101.28'),
+              (datetime.datetime(2015, 9, 28, 23, 36, 45), '46.165.220.215'),
+              (datetime.datetime(2015, 9, 29, 6, 52, 10), '52.7.20.216'),
+              (datetime.datetime(2015, 9, 29, 6, 52, 14), '52.7.20.216')]
     with open('tests/test_apache.log') as infile:
-        output = [x for x in analyze_single_file_apache(infile)]
+        output = sorted([x for x in analyze_single_file_apache(infile)])
+    print(output)
+    print(result)
     assert output == result
 
 def test_read_country_code():
@@ -88,7 +90,9 @@ def test_analyze_files():
     with OpenPostgreSQLsshTunnel():
         engine = create_db_engine('test_ssh_intrusion_logs')
         create_tables(engine)
-        assert analyze_files(engine, test=True) in (0, 1)
+        output = analyze_files(engine, test=True)
+        print(output)
+        assert output > 0
         delete_tables(engine)
 
 def test_db_tables():
