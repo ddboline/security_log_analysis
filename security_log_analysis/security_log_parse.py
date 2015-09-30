@@ -5,6 +5,7 @@
 """
 from __future__ import division, print_function, absolute_import
 
+import os
 import glob
 import gzip
 import time
@@ -16,7 +17,7 @@ from sqlalchemy.sql import func
 
 from .db_tables import (CountryCode, HostCountry, SSHLog, SSHLogCloud,
                         ApacheLog, ApacheLogCloud)
-from .util import (HOSTNAME, OpenPostgreSQLsshTunnel, create_db_engine)
+from .util import HOSTNAME
 
 _logger = logging.getLogger(__name__)
 
@@ -248,3 +249,74 @@ def read_host_country(engine):
     for row in db.query(HostCountry).all():
         host_country[row.host] = row.code
     return host_country
+
+def fill_country_plot(engine, script_path):
+    table = 'country_count_recent'
+    outfname = 'ssh_intrusion_attempts.html'
+    if HOSTNAME != 'dilepton-tower':
+        table = 'country_count_cloud_recent'
+        outfname = 'ssh_intrusion_attempts_cloud.html'
+
+
+    with open(outfname, 'w') as output:
+        with open('%s/templates/COUNTRY_TEMPLATE.html' % script_path,
+                  'r') as inpfile:
+            for line in inpfile:
+                if 'PUTLISTOFCOUNTRIESANDATTEMPTSHERE' in line:
+                    cmd = 'select country, count from %s;' % table
+                    for c, n in engine.execute(cmd):
+                        output.write("%10s['%s', %d],\n" % ('', c, n))
+                else:
+                    output.write(line)
+    if os.path.exists('%s/public_html' % os.getenv('HOME')):
+        os.system('mv %s %s/public_html/' % (outfname, os.getenv('HOME')))
+    return
+
+def plot_time_access(engine, table, title):
+
+    import pandas as pd
+    import numpy as np
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+
+    dtimes = []
+    cmd = 'select datetime from %s' % table
+    for line in engine.execute(cmd):
+        dtimes.append(line[0])
+
+    df = pd.DataFrame({'Datetime': dtimes})
+
+    df['Date'] = df['Datetime'].apply(lambda d: d.date())
+    df['Hours'] = df['Datetime'].apply(lambda x: (x.hour + x.minute/60.
+                                                    + x.second/3600.))
+    df['Weekdays'] = df['Datetime'].apply(lambda x: x.weekday())
+
+    print(table, title)
+    print(df.head())
+
+    sec = df['Hours'].values
+    plt.hist(sec, bins=np.linspace(0, 24, 24),
+             histtype='step')
+    plt.savefig('%s_hour.png' % title, format='png')
+    plt.clf()
+
+    sec = df['Weekdays'].values
+    plt.hist(sec, bins=np.linspace(0, 7, 7), histtype='step')
+    plt.savefig('%s_weekday.png' % title, format='png')
+    plt.clf()
+
+def local_remote_comparison(engine):
+    import pandas as pd
+    columns = ('date', 'local', 'remote')
+    cmd = "select %s " % (', '.join(columns),) + \
+          "from local_remote_compare " + \
+          "where date >= current_date - interval'5 days'"
+    dtm, lct, rct = [], [], []
+    for line in engine.execute(cmd):
+        dt_, lc_, rc_ = line
+        dtm.append(dt_.strftime('%Y-%m-%dT%H:%M:%S%z'))
+        lct.append(lc_)
+        rct.append(rc_)
+    df = pd.DataFrame({'Datetime': dtm, 'Local': lct, 'Remote': rct})
+    print(df.to_string(index=False))

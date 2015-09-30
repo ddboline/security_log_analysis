@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import (BigInteger, Column, Date, DateTime, ForeignKey, String)
+from sqlalchemy import (BigInteger, Column, DateTime, String)
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -54,10 +54,3 @@ class SSHLogCloud(Base):
     host = Column(String(60), nullable=False)
     username = Column(String(15))
 
-
-#class LocalRemoteCompare(Base):
-#    __tablename__ = 'local_remote_compare'
-#
-#    date = Column(Date)
-#    local = Column(BigInteger)
-#    remote = Column(BigInteger)
