@@ -23,6 +23,6 @@ setup(
     package_dir={'security_log_analysis': 'security_log_analysis'},
     package_data={'security_log_analysis': ['templates/*.html',]},
     entry_points={'console_scripts':
-        ['security_log_parse = security_log_analysis.cli:run',
+        ['security_log_parse = security_log_analysis.cli:run_parse',
          'security_log_analyze = security_log_analysis.cli:run_analyze']}
 )
