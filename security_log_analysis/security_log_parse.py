@@ -24,7 +24,7 @@ _logger = logging.getLogger(__name__)
 MONTH_NAMES = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
                'Oct', 'Nov', 'Dec')
 
-OWN_HOSTS = ('24.44.92.189', '129.49.56.207', '75.72.228.84',
+OWN_HOSTS = ('67.84.145.194', '24.44.92.189', '129.49.56.207', '75.72.228.84',
              'ddbolineathome.mooo.com', 'ool-182c5cbd.dyn.optonline.net',
              'dboline.physics.sunysb.edu')
 
@@ -233,6 +233,7 @@ def analyze_files(engine, test=False):
                         db.commit()
                 db.add(table(datetime=dt_, host=hst, id=maxid))
                 maxid += 1
+                number_analyzed += 1
                 db.commit()
                 if test:
                     break
@@ -313,11 +314,11 @@ def plot_time_access(engine, table, title):
     plt.savefig('%s_weekday.png' % title, format='png')
     plt.clf()
 
-def local_remote_comparison(engine):
+def local_remote_comparison(engine, table='local_remote_compare'):
     import pandas as pd
     columns = ('date', 'local', 'remote')
     cmd = "select %s " % (', '.join(columns),) + \
-          "from local_remote_compare " + \
+          "from %s " % table + \
           "where date >= current_date - interval'5 days'"
     dtm, lct, rct = [], [], []
     for line in engine.execute(cmd):
