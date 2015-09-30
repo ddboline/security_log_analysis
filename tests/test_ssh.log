@@ -1,0 +1,30 @@
+Sep 27 08:09:01 dilepton-tower CRON[14344]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 08:09:01 dilepton-tower CRON[14344]: pam_unix(cron:session): session closed for user root
+Sep 27 08:10:00 dilepton-tower atd[14877]: pam_unix(atd:session): session opened for user ddboline by (uid=1)
+Sep 27 08:10:00 dilepton-tower atd[14877]: pam_unix(atd:session): session closed for user ddboline
+Sep 27 08:17:01 dilepton-tower CRON[18624]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 08:17:01 dilepton-tower CRON[18624]: pam_unix(cron:session): session closed for user root
+Sep 27 08:39:01 dilepton-tower CRON[30361]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 08:39:01 dilepton-tower CRON[30361]: pam_unix(cron:session): session closed for user root
+Sep 27 09:09:02 dilepton-tower CRON[14443]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 09:09:02 dilepton-tower CRON[14443]: pam_unix(cron:session): session closed for user root
+Sep 27 09:17:01 dilepton-tower CRON[18677]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 09:17:01 dilepton-tower CRON[18677]: pam_unix(cron:session): session closed for user root
+Sep 27 09:39:01 dilepton-tower CRON[30315]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 09:39:01 dilepton-tower CRON[30315]: pam_unix(cron:session): session closed for user root
+Sep 27 10:09:01 dilepton-tower CRON[14266]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 10:09:01 dilepton-tower CRON[14266]: pam_unix(cron:session): session closed for user root
+Sep 27 10:10:00 dilepton-tower atd[14790]: pam_unix(atd:session): session opened for user ddboline by (uid=1)
+Sep 27 10:10:01 dilepton-tower atd[14790]: pam_unix(atd:session): session closed for user ddboline
+Sep 27 10:17:01 dilepton-tower CRON[18481]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 10:17:01 dilepton-tower CRON[18481]: pam_unix(cron:session): session closed for user root
+Sep 27 10:39:01 dilepton-tower CRON[30053]: pam_unix(cron:session): session opened for user root by (uid=0)
+Sep 27 10:39:01 dilepton-tower CRON[30053]: pam_unix(cron:session): session closed for user root
+Sep 27 10:42:45 dilepton-tower sshd[31950]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=218.87.111.108  user=root
+Sep 27 10:42:47 dilepton-tower sshd[31950]: Failed password for root from 218.87.111.108 port 33104 ssh2
+Sep 27 10:42:52 dilepton-tower sshd[31950]: message repeated 2 times: [ Failed password for root from 218.87.111.108 port 33104 ssh2]
+Sep 27 10:42:53 dilepton-tower sshd[31950]: Received disconnect from 218.87.111.108: 11:  [preauth]
+Sep 27 10:42:53 dilepton-tower sshd[31950]: PAM 2 more authentication failures; logname= uid=0 euid=0 tty=ssh ruser= rhost=218.87.111.108  user=root
+Sep 27 10:43:03 dilepton-tower sshd[32126]: pam_unix(sshd:auth): authentication failure; logname= uid=0 euid=0 tty=ssh ruser= rhost=218.87.111.108  user=root
+Sep 27 10:43:05 dilepton-tower sshd[32126]: Failed password for root from 218.87.111.108 port 36471 ssh2
+Sep 27 10:43:11 dilepton-tower sshd[32126]: message repeated 2 times: [ Failed password for root from 218.87.111.108 port 36471 ssh2]
