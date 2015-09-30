@@ -187,7 +187,6 @@ def analyze_files(engine, test=False):
             for dt_, hst, usr in analyze_single_file_ssh(logf):
                 if dt_ <= maxdt:
                     continue
-                print(dt_, hst, usr)
                 if hst not in host_country:
                     code = find_originating_country(
                                     hst, country_code_list=country_code)
@@ -195,7 +194,9 @@ def analyze_files(engine, test=False):
                         host_country[hst] = code
                         db.add(HostCountry(host=hst, code=code))
                         print(hst, code)
+                        db.commit()
                 db.add(table(datetime=dt_, host=hst, username=usr, id=maxid))
+                maxid += 1
                 number_analyzed += 1
                 if test:
                     break
@@ -216,7 +217,6 @@ def analyze_files(engine, test=False):
             for dt_, hst in analyze_single_file_apache(logf):
                 if dt_ <= maxdt:
                     continue
-                print(dt_, hst)
                 if hst not in host_country:
                     code = find_originating_country(
                                     hst, country_code_list=country_code)
@@ -224,7 +224,9 @@ def analyze_files(engine, test=False):
                         host_country[hst] = code
                         db.add(HostCountry(host=hst, code=code))
                         print(hst, code)
+                        db.commit()
                 db.add(table(datetime=dt_, host=hst, id=maxid))
+                maxid += 1
                 if test:
                     break
                 db.commit()

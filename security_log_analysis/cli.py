@@ -12,7 +12,6 @@ import logging
 from security_log_analysis.security_log_parse import analyze_files
 from security_log_analysis.util import (OpenPostgreSQLsshTunnel,
                                         create_db_engine)
-from security_log_analysis import __version__
 
 __author__ = "Daniel Boline"
 __copyright__ = "Daniel Boline"
@@ -34,7 +33,7 @@ def parse_args(args):
         '-v',
         '--version',
         action='version',
-        version='security_log_analysis {ver}'.format(ver=__version__))
+        version='security_log_analysis ...')
     return parser.parse_args(args)
 
 
