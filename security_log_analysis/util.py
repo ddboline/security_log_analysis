@@ -14,15 +14,6 @@ from sqlalchemy import create_engine
 
 HOSTNAME = os.uname()[1]
 
-def dateTimeString(d):
-    ''' input should be datetime object, output is string '''
-    if not hasattr(d, 'strftime'):
-        return d
-    s = d.strftime('%Y-%m-%dT%H:%M:%S%z')
-    if len(s) == 24 or len(s) == 20:
-        return s
-    elif len(s) == 19 and 'Z' not in s:
-        return '%sZ' % s
 
 class OpenPostgreSQLsshTunnel(object):
     """ Class to let us open an ssh tunnel, then close it when done """

@@ -86,4 +86,4 @@ def test_read_host_country():
 def test_analyze_files():
     with OpenPostgreSQLsshTunnel():
         engine = create_db_engine()
-        assert analyze_files(engine, test=True) == 1
+        assert analyze_files(engine, test=True) in (0, 1)
