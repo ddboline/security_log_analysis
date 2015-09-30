@@ -18,7 +18,7 @@ setup(
     long_description='Garmin App',
     license='MIT',
     test_suite='nose.collector',
-    install_requires=['sqlalchemy'],
+    #install_requires=['sqlalchemy'],
     packages=['security_log_analysis'],
     package_dir={'security_log_analysis': 'security_log_analysis'},
     package_data={'security_log_analysis': ['templates/*.html',]},
