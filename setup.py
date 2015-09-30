@@ -20,6 +20,7 @@ setup(
     description='security_log_analysis',
     long_description='Garmin App',
     license='MIT',
+    test_suite = 'nose.collector',
     install_requires=['pandas', 'numpy', 'requests', 'sqlalchemy', 'pyusb'],
     packages=['security_log_analysis'],
     package_dir={'security_log_analysis': 'security_log_analysis'},
