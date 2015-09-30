@@ -165,6 +165,8 @@ def analyze_single_file_apache(infile):
 
 def analyze_files(engine, test=False):
     """ Analyze log files """
+    number_analyzed = 0
+    
     country_code = read_country_code(engine)
     host_country = read_host_country(engine)
 
@@ -194,7 +196,7 @@ def analyze_files(engine, test=False):
                         db.add(HostCountry(host=hst, code=code))
                         print(hst, code)
                 db.add(table(datetime=dt_, host=hst, username=usr, id=maxid))
-
+                number_analyzed += 1
                 if test:
                     break
                 db.commit()
@@ -226,6 +228,7 @@ def analyze_files(engine, test=False):
                 if test:
                     break
                 db.commit()
+    return number_analyzed
 
 def read_country_code(engine):
     country_code = {}
