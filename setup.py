@@ -1,24 +1,28 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-    Setup file for security_log_analysis.
+Created on Sun May 17 07:14:20 2015
 
-    This file was generated with PyScaffold 2.4.2, a tool that easily
-    puts up a scaffold for your new Python project. Learn more under:
-    http://pyscaffold.readthedocs.org/
+@author: ddboline
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+#from __future__ import unicode_literals
 
-import sys
 from setuptools import setup
 
-
-def setup_package():
-    needs_sphinx = {'build_sphinx', 'upload_docs'}.intersection(sys.argv)
-    sphinx = ['sphinx'] if needs_sphinx else []
-    setup(setup_requires=['six', 'pyscaffold>=2.4rc1,<2.5a0'] + sphinx,
-          tests_require=['pytest_cov', 'pytest'],
-          use_pyscaffold=True)
-
-
-if __name__ == "__main__":
-    setup_package()
+setup(
+    name='security_log_analysis',
+    version='00.00.01',
+    author='Daniel Boline',
+    author_email='ddboline@gmail.com',
+    description='security_log_analysis',
+    long_description='Garmin App',
+    license='MIT',
+    install_requires=['pandas', 'numpy', 'requests', 'sqlalchemy', 'pyusb'],
+    packages=['security_log_analysis'],
+    package_dir={'security_log_analysis': 'security_log_analysis'},
+    entry_points={'console_scripts':
+                    ['security_log_parse = security_log_analysis.cli:run']}
+)
