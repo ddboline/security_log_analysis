@@ -1,7 +1,9 @@
 #!/usr/bin/python2.7
 # -*- coding: utf-8 -*-
 """
-
+    Various functions to parse security logs,
+    use whois to find country of origin for each IP address,
+    then dump results to postgresql database
 """
 from __future__ import division, print_function, absolute_import
 
@@ -10,7 +12,7 @@ import glob
 import gzip
 import time
 import datetime
-import logging
+#import logging
 from subprocess import Popen, PIPE
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
@@ -19,7 +21,7 @@ from .db_tables import (CountryCode, HostCountry, SSHLog, SSHLogCloud,
                         ApacheLog, ApacheLogCloud)
 from .util import HOSTNAME
 
-_logger = logging.getLogger(__name__)
+#_logger = logging.getLogger(__name__)
 
 MONTH_NAMES = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
                'Oct', 'Nov', 'Dec')
@@ -30,17 +32,13 @@ OWN_HOSTS = ('67.84.145.194', '24.44.92.189', '129.49.56.207', '75.72.228.84',
 
 def find_originating_country(hostname, country_code_list=None, orig_host=None):
     """ Find country associated with hostname, using whois """
-    if not hasattr(hostname, 'split'):
-        return None
-    if '.' not in hostname:
-        return None
-    if len(hostname.split('.')) < 2:
+    if not hasattr(hostname, 'split') or '.' not in hostname or \
+            len(hostname.split('.')) < 2:
         return None
     if not orig_host:
         orig_host = hostname
 
     output = []
-    result = 'find hostname country: %s ' % hostname
     ents = hostname.split('.')
     if len(ents) > 2 and country_code_list and ents[-1].upper() in \
             country_code_list:
@@ -90,10 +88,6 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
         country = find_originating_country('.'.join(hostname.split('.')[1:]),
                                            country_code_list=country_code_list,
                                            orig_host=orig_host)
-
-    if country:
-        result += country
-
     return country
 
 def analyze_single_line_ssh(line):
@@ -164,7 +158,7 @@ def analyze_single_file_apache(infile):
 def analyze_files(engine, test=False):
     """ Analyze log files """
     number_analyzed = 0
-    
+
     country_code = read_country_code(engine)
     host_country = read_host_country(engine)
 
@@ -173,9 +167,9 @@ def analyze_files(engine, test=False):
         table = SSHLogCloud
 
     session = sessionmaker(bind=engine)
-    db = session()
-    maxdt = db.query(func.max(table.datetime))[0][0]
-    maxid = db.query(func.max(table.id))[0][0]
+    db_ = session()
+    maxdt = db_.query(func.max(table.datetime))[0][0]
+    maxid = db_.query(func.max(table.id))[0][0]
     if maxid:
         maxid += 1
     else:
@@ -194,21 +188,21 @@ def analyze_files(engine, test=False):
                                     hst, country_code_list=country_code)
                     if code:
                         host_country[hst] = code
-                        db.add(HostCountry(host=hst, code=code))
+                        db_.add(HostCountry(host=hst, code=code))
                         print(hst, code)
-                        db.commit()
-                db.add(table(datetime=dt_, host=hst, username=usr, id=maxid))
+                        db_.commit()
+                db_.add(table(datetime=dt_, host=hst, username=usr, id=maxid))
                 maxid += 1
                 number_analyzed += 1
-                db.commit()
+                db_.commit()
                 if test:
                     break
 
     table = ApacheLog
     if HOSTNAME != 'dilepton-tower':
         table = ApacheLogCloud
-    maxdt = db.query(func.max(table.datetime))[0][0]
-    maxid = db.query(func.max(table.id))[0][0]
+    maxdt = db_.query(func.max(table.datetime))[0][0]
+    maxid = db_.query(func.max(table.id))[0][0]
     if maxid:
         maxid += 1
     else:
@@ -228,37 +222,52 @@ def analyze_files(engine, test=False):
                                     hst, country_code_list=country_code)
                     if code:
                         host_country[hst] = code
-                        db.add(HostCountry(host=hst, code=code))
+                        db_.add(HostCountry(host=hst, code=code))
                         print(hst, code)
-                        db.commit()
-                db.add(table(datetime=dt_, host=hst, id=maxid))
+                        db_.commit()
+                db_.add(table(datetime=dt_, host=hst, id=maxid))
                 maxid += 1
                 number_analyzed += 1
-                db.commit()
+                db_.commit()
                 if test:
                     break
-    db.close()
+    db_.close()
     return number_analyzed
 
 def read_country_code(engine):
+    """
+        dump country_code table to dictionary
+        country code is 2-digit code taken from ISO-3166-1 alpha-2, see:
+        https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+    """
     country_code = {}
     session = sessionmaker(bind=engine)
-    db = session()
-    for row in db.query(CountryCode).all():
+    db_ = session()
+    for row in db_.query(CountryCode).all():
         country_code[row.code] = row.country
-    db.close()
+    db_.close()
     return country_code
 
 def read_host_country(engine):
+    """
+        dump host_country table to dictionary
+        maps host name to country code
+    """
     host_country = {}
     session = sessionmaker(bind=engine)
-    db = session()
-    for row in db.query(HostCountry).all():
+    db_ = session()
+    for row in db_.query(HostCountry).all():
         host_country[row.host] = row.code
-    db.close()
+    db_.close()
     return host_country
 
 def fill_country_plot(engine, script_path):
+    """
+        use prexisting database view
+        which contains number of entries vs. country
+        data is put into a template using an api from google
+        to display the data on a map of the world
+    """
     table = 'country_count_recent'
     outfname = 'ssh_intrusion_attempts.html'
     if HOSTNAME != 'dilepton-tower':
@@ -272,8 +281,8 @@ def fill_country_plot(engine, script_path):
             for line in inpfile:
                 if 'PUTLISTOFCOUNTRIESANDATTEMPTSHERE' in line:
                     cmd = 'select country, count from %s;' % table
-                    for c, n in engine.execute(cmd):
-                        output.write("%10s['%s', %d],\n" % ('', c, n))
+                    for cty, cnt in engine.execute(cmd):
+                        output.write("%10s['%s', %d],\n" % ('', cty, cnt))
                 else:
                     output.write(line)
     if os.path.exists('%s/public_html' % os.getenv('HOME')):
@@ -281,7 +290,9 @@ def fill_country_plot(engine, script_path):
     return
 
 def plot_time_access(engine, table, title):
-
+    """
+        make plots
+    """
     import pandas as pd
     import numpy as np
     import matplotlib
@@ -293,28 +304,36 @@ def plot_time_access(engine, table, title):
     for line in engine.execute(cmd):
         dtimes.append(line[0])
 
-    df = pd.DataFrame({'Datetime': dtimes})
+    df_ = pd.DataFrame({'Datetime': dtimes})
 
-    df['Date'] = df['Datetime'].apply(lambda d: d.date())
-    df['Hours'] = df['Datetime'].apply(lambda x: (x.hour + x.minute/60.
+    df_['Week'] = df_['Datetime'].apply(lambda d: d.isocalendar()[1])
+    df_['Date'] = df_['Datetime'].apply(lambda d: d.date())
+    df_['Hours'] = df_['Datetime'].apply(lambda x: (x.hour + x.minute/60.
                                                     + x.second/3600.))
-    df['Weekdays'] = df['Datetime'].apply(lambda x: x.weekday())
+    df_['Weekdays'] = df_['Datetime'].apply(lambda x: x.weekday())
 
     print(table, title)
-    print(df.head())
+    print(df_.head())
 
-    sec = df['Hours'].values
+    sec = df_['Week'].values
+    plt.hist(sec, bins=np.linspace(0, 53, 53),
+             histtype='step')
+    plt.savefig('%s_week.png' % title, format='png')
+    plt.clf()
+
+    sec = df_['Hours'].values
     plt.hist(sec, bins=np.linspace(0, 24, 24),
              histtype='step')
     plt.savefig('%s_hour.png' % title, format='png')
     plt.clf()
 
-    sec = df['Weekdays'].values
+    sec = df_['Weekdays'].values
     plt.hist(sec, bins=np.linspace(0, 7, 7), histtype='step')
     plt.savefig('%s_weekday.png' % title, format='png')
     plt.clf()
 
 def local_remote_comparison(engine, table='local_remote_compare'):
+    """ print out local/remote comparison for last 5 days """
     import pandas as pd
     columns = ('date', 'local', 'remote')
     cmd = "select %s " % (', '.join(columns),) + \
@@ -326,5 +345,5 @@ def local_remote_comparison(engine, table='local_remote_compare'):
         dtm.append(dt_.strftime('%Y-%m-%dT%H:%M:%S%z'))
         lct.append(lc_)
         rct.append(rc_)
-    df = pd.DataFrame({'Datetime': dtm, 'Local': lct, 'Remote': rct})
-    print(df.to_string(index=False))
+    df_ = pd.DataFrame({'Datetime': dtm, 'Local': lct, 'Remote': rct})
+    print(df_.to_string(index=False))

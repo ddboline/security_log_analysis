@@ -1,10 +1,12 @@
 # coding: utf-8
+"""
+    Tables in ssh_intrusion_logs Database
+"""
 from sqlalchemy import (BigInteger, Column, DateTime, String)
 from sqlalchemy.ext.declarative import declarative_base
 
 
 Base = declarative_base()
-metadata = Base.metadata
 
 
 class HostCountry(Base):

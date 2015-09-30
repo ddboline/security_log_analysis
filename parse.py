@@ -1,14 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-    Main module
+    Wrapper around security_log_analysis.cli.run_parse
 """
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from security_log_analysis.cli import run
+from security_log_analysis.cli import run_parse
 
 if __name__ == '__main__':
-    run()
+    run_parse()
