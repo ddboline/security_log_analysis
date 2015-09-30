@@ -155,14 +155,11 @@ def parse_apache_time_str(timestr):
 def analyze_single_file_apache(infile):
     """ Analyze single line of apache log file """
     for line in infile:
-        try:
-            hst = line.split()[0]
-            dt_ = parse_apache_time_str(line.split()[3].replace('[', ''))
-            if hst in OWN_HOSTS:
-                continue
-            yield (dt_, hst)
-        except:
+        hst = line.split()[0]
+        dt_ = parse_apache_time_str(line.split()[3].replace('[', ''))
+        if hst in OWN_HOSTS:
             continue
+        yield (dt_, hst)
 
 def analyze_files(engine, test=False):
     """ Analyze log files """
@@ -178,7 +175,11 @@ def analyze_files(engine, test=False):
     session = sessionmaker(bind=engine)
     db = session()
     maxdt = db.query(func.max(table.datetime))[0][0]
-    maxid = db.query(func.max(table.id))[0][0]+1
+    maxid = db.query(func.max(table.id))[0][0]
+    if maxid:
+        maxid += 1
+    else:
+        maxid = 0
     for fname in glob.glob('/var/log/auth.log*'):
         print(fname)
         open_fn = open
@@ -186,7 +187,7 @@ def analyze_files(engine, test=False):
             open_fn = gzip.open
         with open_fn(fname, 'r') as logf:
             for dt_, hst, usr in analyze_single_file_ssh(logf):
-                if dt_ <= maxdt:
+                if maxdt and dt_ <= maxdt:
                     continue
                 if hst not in host_country:
                     code = find_originating_country(
@@ -199,15 +200,19 @@ def analyze_files(engine, test=False):
                 db.add(table(datetime=dt_, host=hst, username=usr, id=maxid))
                 maxid += 1
                 number_analyzed += 1
+                db.commit()
                 if test:
                     break
-                db.commit()
 
     table = ApacheLog
     if HOSTNAME != 'dilepton-tower':
         table = ApacheLogCloud
     maxdt = db.query(func.max(table.datetime))[0][0]
-    maxid = db.query(func.max(table.id))[0][0]+1
+    maxid = db.query(func.max(table.id))[0][0]
+    if maxid:
+        maxid += 1
+    else:
+        maxid = 0
     for fname in glob.glob('/var/log/apache2/access.log*') + \
             glob.glob('/var/log/apache2/ssl_access.log'):
         print(fname)
@@ -216,7 +221,7 @@ def analyze_files(engine, test=False):
             open_fn = gzip.open
         with open_fn(fname, 'r') as logf:
             for dt_, hst in analyze_single_file_apache(logf):
-                if dt_ <= maxdt:
+                if maxdt and dt_ <= maxdt:
                     continue
                 if hst not in host_country:
                     code = find_originating_country(
@@ -228,9 +233,10 @@ def analyze_files(engine, test=False):
                         db.commit()
                 db.add(table(datetime=dt_, host=hst, id=maxid))
                 maxid += 1
+                db.commit()
                 if test:
                     break
-                db.commit()
+    db.close()
     return number_analyzed
 
 def read_country_code(engine):
@@ -248,6 +254,7 @@ def read_host_country(engine):
     db = session()
     for row in db.query(HostCountry).all():
         host_country[row.host] = row.code
+    db.close()
     return host_country
 
 def fill_country_plot(engine, script_path):

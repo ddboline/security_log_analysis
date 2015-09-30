@@ -6,6 +6,7 @@ Created on Wed Sep 30 07:32:45 2015
 """
 
 import datetime
+from security_log_analysis.db_tables import (create_tables, delete_tables)
 from security_log_analysis.util import (OpenPostgreSQLsshTunnel,
                                         create_db_engine)
 from security_log_analysis.security_log_parse import (
@@ -85,5 +86,14 @@ def test_read_host_country():
 
 def test_analyze_files():
     with OpenPostgreSQLsshTunnel():
-        engine = create_db_engine()
+        engine = create_db_engine('test_ssh_intrusion_logs')
+        create_tables(engine)
         assert analyze_files(engine, test=True) in (0, 1)
+        delete_tables(engine)
+
+def test_db_tables():
+    import security_log_analysis.db_tables as db_tables
+    for label in dir(db_tables):
+        val = getattr(db_tables, label)
+        if hasattr(val, '__tablename__'):
+            print(val)

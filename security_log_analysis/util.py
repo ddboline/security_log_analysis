@@ -37,13 +37,12 @@ class OpenPostgreSQLsshTunnel(object):
         else:
             return True
 
-def create_db_engine():
+def create_db_engine(dbname='ssh_intrusion_logs'):
     """ Create sqlalchemy database engine """
     user = 'ddboline'
     pwd = 'BQGIvkKFZPejrKvX'
     host = 'localhost'
     port = 5432
-    dbname = 'ssh_intrusion_logs'
     dbstring = 'postgresql://%s:%s@%s:%s/%s' % (user, pwd, host, port, dbname)
     engine = create_engine(dbstring)
     return engine
