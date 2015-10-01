@@ -11,14 +11,14 @@ from setuptools import setup
 
 setup(
     name='security_log_analysis',
-    version='00.00.01',
+    version='0.0.2',
     author='Daniel Boline',
     author_email='ddboline@gmail.com',
     description='security_log_analysis',
     long_description='Garmin App',
     license='MIT',
     test_suite='nose.collector',
-    #install_requires=['sqlalchemy'],
+    install_requires=['sqlalchemy', 'psycopg2'],
     packages=['security_log_analysis'],
     package_dir={'security_log_analysis': 'security_log_analysis'},
     package_data={'security_log_analysis': ['templates/*.html',]},
