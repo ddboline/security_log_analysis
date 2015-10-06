@@ -19,15 +19,17 @@ class OpenPostgreSQLsshTunnel(object):
     """ Class to let us open an ssh tunnel, then close it when done """
     def __init__(self):
         self.tunnel_process = 0
+        self.postgre_port = 5432
 
     def __enter__(self):
         if HOSTNAME != 'dilepton-tower':
-            _cmd = 'ssh -N -L localhost:5432:localhost:5432 ' \
-                   + 'ddboline@ddbolineathome.mooo.com'
+            self.postgre_port = 5436
+            _cmd = 'ssh -N -L localhost:' + self.postgre_port + \
+                   ':localhost:5432 ddboline@ddbolineathome.mooo.com'
             args = shlex.split(_cmd)
             self.tunnel_process = Popen(args, shell=False)
             time.sleep(5)
-        return self.tunnel_process
+        return self.postgre_port
 
     def __exit__(self, exc_type, exc_value, traceback):
         if self.tunnel_process:
@@ -37,12 +39,12 @@ class OpenPostgreSQLsshTunnel(object):
         else:
             return True
 
-def create_db_engine(dbname='ssh_intrusion_logs'):
+
+def create_db_engine(port=5432, dbname='ssh_intrusion_logs'):
     """ Create sqlalchemy database engine """
     user = 'ddboline'
     pwd = 'BQGIvkKFZPejrKvX'
     host = 'localhost'
-    port = 5432
     dbstring = 'postgresql://%s:%s@%s:%s/%s' % (user, pwd, host, port, dbname)
     engine = create_engine(dbstring)
     return engine

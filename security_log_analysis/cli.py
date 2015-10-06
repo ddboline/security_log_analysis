@@ -13,15 +13,17 @@ from security_log_analysis.security_log_parse import (analyze_files,
 from security_log_analysis.util import (OpenPostgreSQLsshTunnel,
                                         create_db_engine)
 
+
 def run_parse():
     """
         Open connection with postgresql database
         create engine
         run analyze_files
     """
-    with OpenPostgreSQLsshTunnel():
-        engine = create_db_engine()
+    with OpenPostgreSQLsshTunnel() as pport:
+        engine = create_db_engine(port=pport)
         print(analyze_files(engine))
+
 
 def run_analyze(data_path=security_log_analysis.__path__[0]):
     """
@@ -30,8 +32,8 @@ def run_analyze(data_path=security_log_analysis.__path__[0]):
         plot time domain frequencies
         print local / remote comparison
     """
-    with OpenPostgreSQLsshTunnel():
-        engine = create_db_engine()
+    with OpenPostgreSQLsshTunnel() as pport:
+        engine = create_db_engine(port=pport)
         fill_country_plot(engine, data_path)
         for table in ('ssh_log', 'ssh_log_cloud', 'apache_log',
                       'apache_log_cloud'):
