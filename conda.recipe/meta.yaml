@@ -1,6 +1,6 @@
 package:
     name: security_log_analysis
-    version: "0.0.2.2"
+    version: "0.0.2.1"
 
 #build:
     #number: {{ environ.get('GIT_DESCRIBE_NUMBER', 0) }}
