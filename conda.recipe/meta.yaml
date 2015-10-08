@@ -13,18 +13,10 @@ requirements:
     - python
     - numpy
     - libpython # [py2k and win]
-    - pandas
-    - matplotlib
-    - requests
 
   run:
     - python
     - numpy
-    - python-dateutil
-    - pytz
-    - pandas
-    - matplotlib
-    - requests
 
 test:
   imports:
