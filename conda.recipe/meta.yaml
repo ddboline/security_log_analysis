@@ -13,6 +13,7 @@ requirements:
     - python
     - numpy
     - libpython # [py2k and win]
+    - sqlalchemy
 
   run:
     - python
