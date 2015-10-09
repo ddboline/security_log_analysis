@@ -30,6 +30,7 @@ OWN_HOSTS = ('67.84.145.194', '24.44.92.189', '129.49.56.207', '75.72.228.84',
              'ddbolineathome.mooo.com', 'ool-182c5cbd.dyn.optonline.net',
              'dboline.physics.sunysb.edu')
 
+
 def find_originating_country(hostname, country_code_list=None, orig_host=None):
     """ Find country associated with hostname, using whois """
     if not hasattr(hostname, 'split') or '.' not in hostname or \
@@ -90,6 +91,7 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
                                            orig_host=orig_host)
     return country
 
+
 def analyze_single_line_ssh(line):
     """ Analyze single line from ssh log file """
     if 'pam_unix' not in line and 'Invalid user' not in line:
@@ -126,6 +128,7 @@ def analyze_single_line_ssh(line):
                 user = ent.replace('user=', '')
     return date, host, user
 
+
 def analyze_single_file_ssh(infile):
     """ Analyze single ssh log file """
     for line in infile:
@@ -134,6 +137,7 @@ def analyze_single_file_ssh(infile):
             continue
         if dt_ and hst and usr:
             yield (dt_, hst, usr)
+
 
 def parse_apache_time_str(timestr):
     """ Parse apache time string """
@@ -146,6 +150,7 @@ def parse_apache_time_str(timestr):
     return datetime.datetime(year=year, month=mon, day=day, hour=hour,
                              minute=minute, second=second)
 
+
 def analyze_single_file_apache(infile):
     """ Analyze single line of apache log file """
     for line in infile:
@@ -154,6 +159,7 @@ def analyze_single_file_apache(infile):
         if hst in OWN_HOSTS:
             continue
         yield (dt_, hst)
+
 
 def analyze_files(engine, test=False):
     """ Analyze log files """
@@ -185,7 +191,7 @@ def analyze_files(engine, test=False):
                     continue
                 if hst not in host_country:
                     code = find_originating_country(
-                                    hst, country_code_list=country_code)
+                        hst, country_code_list=country_code)
                     if code:
                         host_country[hst] = code
                         db_.add(HostCountry(host=hst, code=code))
@@ -219,7 +225,7 @@ def analyze_files(engine, test=False):
                     continue
                 if hst not in host_country:
                     code = find_originating_country(
-                                    hst, country_code_list=country_code)
+                        hst, country_code_list=country_code)
                     if code:
                         host_country[hst] = code
                         db_.add(HostCountry(host=hst, code=code))
@@ -233,6 +239,7 @@ def analyze_files(engine, test=False):
                     break
     db_.close()
     return number_analyzed
+
 
 def read_country_code(engine):
     """
@@ -248,6 +255,7 @@ def read_country_code(engine):
     db_.close()
     return country_code
 
+
 def read_host_country(engine):
     """
         dump host_country table to dictionary
@@ -260,6 +268,7 @@ def read_host_country(engine):
         host_country[row.host] = row.code
     db_.close()
     return host_country
+
 
 def fill_country_plot(engine, script_path):
     """
@@ -274,7 +283,6 @@ def fill_country_plot(engine, script_path):
         table = 'country_count_cloud_recent'
         outfname = 'ssh_intrusion_attempts_cloud.html'
 
-
     with open(outfname, 'w') as output:
         with open('%s/templates/COUNTRY_TEMPLATE.html' % script_path,
                   'r') as inpfile:
@@ -288,6 +296,7 @@ def fill_country_plot(engine, script_path):
     if os.path.exists('%s/public_html' % os.getenv('HOME')):
         os.system('mv %s %s/public_html/' % (outfname, os.getenv('HOME')))
     return
+
 
 def plot_time_access(engine, table, title):
     """
@@ -331,6 +340,7 @@ def plot_time_access(engine, table, title):
     plt.hist(sec, bins=np.linspace(0, 7, 7), histtype='step')
     plt.savefig('%s_weekday.png' % title, format='png')
     plt.clf()
+
 
 def local_remote_comparison(engine, table='local_remote_compare'):
     """ print out local/remote comparison for last 5 days """
