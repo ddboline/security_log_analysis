@@ -95,7 +95,7 @@ def test_analyze_files():
         create_tables(engine)
         output = analyze_files(engine, test=True)
         print(output)
-        assert output > 0
+        assert output >= 0
         delete_tables(engine)
 
 
