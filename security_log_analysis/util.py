@@ -17,13 +17,12 @@ HOSTNAME = os.uname()[1]
 
 class OpenPostgreSQLsshTunnel(object):
     """ Class to let us open an ssh tunnel, then close it when done """
-    def __init__(self):
+    def __init__(self, port=5432):
         self.tunnel_process = 0
-        self.postgre_port = 5432
+        self.postgre_port = port
 
     def __enter__(self):
         if HOSTNAME != 'dilepton-tower':
-            self.postgre_port = 5436
             _cmd = 'ssh -N -L localhost:%d' % self.postgre_port + \
                    ':localhost:5432 ddboline@ddbolineathome.mooo.com'
             args = shlex.split(_cmd)
