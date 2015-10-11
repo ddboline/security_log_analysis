@@ -19,11 +19,13 @@ class OpenPostgreSQLsshTunnel(object):
     """ Class to let us open an ssh tunnel, then close it when done """
     def __init__(self, port=5432):
         self.tunnel_process = 0
-        self.postgre_port = port
+        self.postgre_port = 5432
+        self.remote_port = port
 
     def __enter__(self):
         if HOSTNAME != 'dilepton-tower':
-            _cmd = 'ssh -N -L localhost:%d' % self.postgre_port + \
+            self.postgre_port = self.remote_port
+            _cmd = 'ssh -N -L localhost:%d' % self.remote_port + \
                    ':localhost:5432 ddboline@ddbolineathome.mooo.com'
             args = shlex.split(_cmd)
             self.tunnel_process = Popen(args, shell=False)
