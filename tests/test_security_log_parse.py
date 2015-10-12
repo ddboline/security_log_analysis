@@ -16,7 +16,7 @@ from security_log_analysis.security_log_parse import (
 
 
 def test_find_originating_country():
-    with OpenPostgreSQLsshTunnel(port=5433) as pport:
+    with OpenPostgreSQLsshTunnel(port=5434) as pport:
         engine = create_db_engine(port=pport)
         country_list = read_country_code(engine)
 
@@ -72,7 +72,7 @@ def test_analyze_single_file_apache():
 
 
 def test_read_country_code():
-    with OpenPostgreSQLsshTunnel(port=5434) as pport:
+    with OpenPostgreSQLsshTunnel(port=5435) as pport:
         engine = create_db_engine(port=pport)
         country_code = read_country_code(engine)
 
@@ -81,7 +81,7 @@ def test_read_country_code():
 
 
 def test_read_host_country():
-    with OpenPostgreSQLsshTunnel(port=5435) as pport:
+    with OpenPostgreSQLsshTunnel(port=5436) as pport:
         engine = create_db_engine(port=pport)
         host_country = read_host_country(engine)
 
@@ -90,7 +90,7 @@ def test_read_host_country():
 
 
 def test_analyze_files():
-    with OpenPostgreSQLsshTunnel(port=5436) as pport:
+    with OpenPostgreSQLsshTunnel(port=5437) as pport:
         engine = create_db_engine(port=pport, dbname='test_ssh_intrusion_logs')
         create_tables(engine)
         output = analyze_files(engine, test=True)
