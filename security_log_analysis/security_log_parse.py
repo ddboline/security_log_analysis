@@ -125,7 +125,7 @@ def analyze_single_line_ssh(line):
             if 'rhost' in ent:
                 host = ent.replace('rhost=', '')
             elif 'user' in ent:
-                user = ent.replace('user=', '')[:14]
+                user = ent.replace('user=', '')
     return date, host, user
 
 
@@ -197,8 +197,8 @@ def analyze_files(engine, test=False):
                         db_.add(HostCountry(host=hst, code=code))
                         print(hst, code)
                         db_.commit()
-                print(usr, usr[:14])
-                db_.add(table(datetime=dt_, host=hst, username=usr, id=maxid))
+                db_.add(table(datetime=dt_, host=hst, username=usr[:15],
+                              id=maxid))
                 maxid += 1
                 number_analyzed += 1
                 db_.commit()
