@@ -125,7 +125,7 @@ def analyze_single_line_ssh(line):
             if 'rhost' in ent:
                 host = ent.replace('rhost=', '')
             elif 'user' in ent:
-                user = ent.replace('user=', '')
+                user = ent.replace('user=', '')[:15]
     return date, host, user
 
 
