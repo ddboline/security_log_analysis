@@ -56,8 +56,10 @@ class SSHLogCloud(Base):
     host = Column(String(60), nullable=False)
     username = Column(String(15))
 
+
 def create_tables(engine):
     Base.metadata.create_all(bind=engine)
+
 
 def delete_tables(engine):
     Base.metadata.drop_all(bind=engine)
