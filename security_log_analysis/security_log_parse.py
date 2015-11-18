@@ -284,16 +284,19 @@ def fill_country_plot(engine, script_path):
         table = 'country_count_cloud_recent'
         outfname = 'ssh_intrusion_attempts_cloud.html'
 
+    con = engine.connect()
+
     with open(outfname, 'w') as output:
         with open('%s/templates/COUNTRY_TEMPLATE.html' % script_path,
                   'r') as inpfile:
             for line in inpfile:
                 if 'PUTLISTOFCOUNTRIESANDATTEMPTSHERE' in line:
                     cmd = 'select country, count from %s;' % table
-                    for cty, cnt in engine.execute(cmd):
+                    for cty, cnt in con.execute(cmd):
                         output.write("%10s['%s', %d],\n" % ('', cty, cnt))
                 else:
                     output.write(line)
+    con.close()
     if os.path.exists('%s/public_html' % os.getenv('HOME')):
         os.system('mv %s %s/public_html/' % (outfname, os.getenv('HOME')))
     return
