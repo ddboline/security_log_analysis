@@ -76,14 +76,17 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
         if 'Brazilian resource' in line:
             country = 'BR'
 
-    if 'whois.nic.ad.jp' in output:
-        country = 'JP'
-
-    if 'KOREAN' in output:
-        country = 'KR'
-
-    if 'hinet.net' in output:
-        country = 'CN'
+    if not country:
+        if 'whois.nic.ad.jp' in output:
+            country = 'JP'
+        elif 'KOREAN' in output:
+            country = 'KR'
+        elif 'hinet.net' in output:
+            country = 'CN'
+        elif 'contabo.host' in output:
+            country = 'DE'
+        elif output.endswith('.eu'):
+            country = 'FR'
 
     if not country and hostname:
         country = find_originating_country('.'.join(hostname.split('.')[1:]),
