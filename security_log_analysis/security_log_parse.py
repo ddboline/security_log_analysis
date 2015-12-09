@@ -200,7 +200,7 @@ def analyze_files(engine, test=False):
                         host_country[hst] = code
                         db_.add(HostCountry(host=hst, code=code))
                         print(hst, code)
-#                        db_.commit()
+                        db_.commit()
                 db_.add(table(datetime=dt_, host=hst, username=usr[:15],
                               id=maxid))
                 maxid += 1
