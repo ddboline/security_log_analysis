@@ -90,9 +90,9 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
             country = 'FR'
 
     if not country and hostname:
-        country = find_originating_country('.'.join(hostname.split('.')[1:]),
-                                           country_code_list=country_code_list,
-                                           orig_host=orig_host)
+        return find_originating_country('.'.join(hostname.split('.')[1:]),
+                                        country_code_list=country_code_list,
+                                        orig_host=orig_host)
     return country
 
 
