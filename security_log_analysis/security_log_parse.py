@@ -78,15 +78,15 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
             country = 'BR'
 
     if not country:
-        if 'whois.nic.ad.jp' in output:
+        if 'whois.nic.ad.jp' in hostname:
             country = 'JP'
         elif 'KOREAN' in output:
             country = 'KR'
-        elif 'hinet.net' in output:
+        elif 'hinet.net' in hostname:
             country = 'CN'
-        elif 'contabo.host' in output:
+        elif 'contabo.host' in hostname:
             country = 'DE'
-        elif output.endswith('.eu'):
+        elif hostname.endswith('.eu'):
             country = 'FR'
 
     if not country and hostname:
