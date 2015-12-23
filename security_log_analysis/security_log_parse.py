@@ -29,7 +29,7 @@ MONTH_NAMES = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
 OWN_HOSTS = ('67.84.145.194', '24.44.92.189', '129.49.56.207', '75.72.228.84',
              'ddbolineathome.mooo.com', 'ool-182c5cbd.dyn.optonline.net',
              'dboline.physics.sunysb.edu', '127.0.0.1', '208.105.40.20',
-             '108.29.43.81', '192.168.1.1')
+             '192.168.1.1', '108.14.33.127', '52.7.20.216')
 
 
 def find_originating_country(hostname, country_code_list=None, orig_host=None):
