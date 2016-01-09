@@ -12,6 +12,7 @@ import glob
 import gzip
 import time
 import datetime
+from socket import gethostbyname
 #import logging
 from subprocess import Popen, PIPE
 from sqlalchemy.orm import sessionmaker
@@ -40,54 +41,58 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
     if not orig_host:
         orig_host = hostname
 
-    output = []
-    ents = hostname.split('.')
-    if len(ents) > 2 and country_code_list and ents[-1].upper() in \
-            country_code_list:
-        return ents[-1].upper()
+    def _worker(hostname):
+        output = []
+        ents = hostname.split('.')
+        if len(ents) > 2 and country_code_list and ents[-1].upper() in \
+                country_code_list:
+            return ents[-1].upper()
+        pipe = Popen('whois %s' % hostname, shell=True, stdin=PIPE,
+                     stdout=PIPE, close_fds=True)
+        wfile = pipe.stdout
+        output = [l for l in wfile]
+        pipe.wait()
 
-    pipe = Popen('whois %s' % hostname, shell=True, stdin=PIPE,
-                 stdout=PIPE, close_fds=True)
-    wfile = pipe.stdout
-    output = [l for l in wfile]
-    pipe.wait()
+        output = ''.join(['%s' % s.decode(errors='ignore') for s in output])
 
-    output = ''.join(['%s' % s.decode(errors='ignore') for s in output])
+        if 'Your connection limit exceeded. Please slow down and try again ' \
+                'later.' in output or 'Timeout' in output:
+            time.sleep(10)
+            print(hostname)
+            return find_originating_country(
+                hostname, country_code_list=country_code_list,
+                orig_host=orig_host)
+        country = None
+        for line in output.split('\n'):
+            if 'country' in line or 'Country' in line:
+                cn_ = line.split()[-1]
+                if cn_ in country_code_list.values():
+                    _dict = {v: k for (k, v) in country_code_list.items()}
+                    return _dict[cn_]
+                cn_ = line.split()[-1][-2:].upper()
+                if country != cn_:
+                    if country is not None:
+                        print('country? %s %s %s' % (country, cn_, hostname))
+                    country = cn_
+            if 'Brazilian resource' in line:
+                country = 'BR'
+        if not country:
+            if 'whois.nic.ad.jp' in hostname:
+                country = 'JP'
+            elif 'KOREAN' in output:
+                country = 'KR'
+            elif 'hinet.net' in hostname:
+                country = 'CN'
+            elif 'contabo.host' in hostname:
+                country = 'DE'
+            elif hostname.endswith('.eu'):
+                country = 'FR'
+        return country
 
-    if 'Your connection limit exceeded. Please slow down and try again later.'\
-            in output or 'Timeout' in output:
-        time.sleep(10)
-        print(hostname)
-        return find_originating_country(hostname,
-                                        country_code_list=country_code_list,
-                                        orig_host=orig_host)
-
-    country = None
-    for line in output.split('\n'):
-        if 'country' in line or 'Country' in line:
-            cn_ = line.split()[-1]
-            if cn_ in country_code_list.values():
-                _dict = {v: k for (k, v) in country_code_list.items()}
-                return _dict[cn_]
-            cn_ = line.split()[-1][-2:].upper()
-            if country != cn_:
-                if country is not None:
-                    print('country? %s %s %s' % (country, cn_, hostname))
-                country = cn_
-        if 'Brazilian resource' in line:
-            country = 'BR'
+    country = _worker(hostname)
 
     if not country:
-        if 'whois.nic.ad.jp' in hostname:
-            country = 'JP'
-        elif 'KOREAN' in output:
-            country = 'KR'
-        elif 'hinet.net' in hostname:
-            country = 'CN'
-        elif 'contabo.host' in hostname:
-            country = 'DE'
-        elif hostname.endswith('.eu'):
-            country = 'FR'
+        country = _worker(gethostbyname(hostname))
 
     if not country and hostname:
         return find_originating_country('.'.join(hostname.split('.')[1:]),
