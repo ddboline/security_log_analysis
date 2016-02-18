@@ -61,9 +61,7 @@ def test_analyze_single_file_apache():
               (datetime.datetime(2015, 9, 28, 20, 50, 46), '184.105.139.68'),
               (datetime.datetime(2015, 9, 28, 20, 56, 31), '184.105.139.68'),
               (datetime.datetime(2015, 9, 28, 21, 19, 20), '109.123.101.28'),
-              (datetime.datetime(2015, 9, 28, 23, 36, 45), '46.165.220.215'),
-              (datetime.datetime(2015, 9, 29, 6, 52, 10), '52.7.20.216'),
-              (datetime.datetime(2015, 9, 29, 6, 52, 14), '52.7.20.216')]
+              (datetime.datetime(2015, 9, 28, 23, 36, 45), '46.165.220.215')]
     with open('tests/test_apache.log') as infile:
         output = sorted([x for x in analyze_single_file_apache(infile)])
     print(output)
