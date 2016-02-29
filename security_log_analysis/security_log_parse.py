@@ -112,11 +112,11 @@ def analyze_single_line_ssh(line):
     mn_ = int(ents[2][3:5])
     sc_ = int(ents[2][6:8])
 
-    date = datetime.datetime(year=2015, month=month, day=day, hour=hr_,
+    date = datetime.datetime(year=2016, month=month, day=day, hour=hr_,
                              minute=mn_, second=sc_)
-    if month <= datetime.datetime.now().month:
-        date = datetime.datetime(year=2016, month=month, day=day, hour=hr_,
-                                 minute=mn_, second=sc_)
+    #if month <= datetime.datetime.now().month:
+        #date = datetime.datetime(year=2016, month=month, day=day, hour=hr_,
+                                 #minute=mn_, second=sc_)
 
     pname = ents[4].split('[')[0]
     if pname != 'sshd':
