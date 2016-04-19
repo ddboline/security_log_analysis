@@ -11,7 +11,7 @@ from setuptools import setup
 
 setup(
     name='security_log_analysis',
-    version='0.0.3.2',
+    version='0.0.3.3',
     author='Daniel Boline',
     author_email='ddboline@gmail.com',
     description='security_log_analysis',
