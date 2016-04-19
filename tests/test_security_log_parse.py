@@ -74,7 +74,8 @@ def test_read_country_code():
         engine = create_db_engine(port=pport)
         country_code = read_country_code(engine)
 
-    assert len(country_code) == 249
+    print(len(country_code))
+    assert len(country_code) == 250
     assert country_code['IL'] == 'Israel'
 
 

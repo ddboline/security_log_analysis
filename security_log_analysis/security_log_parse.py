@@ -118,8 +118,8 @@ def analyze_single_line_ssh(line):
         date = datetime.datetime(year=curyear, month=month, day=day, hour=hr_,
                                  minute=mn_, second=sc_)
     else:
-        date = datetime.datetime(year=curyear-1, month=month, day=day, hour=hr_,
-                                 minute=mn_, second=sc_)
+        date = datetime.datetime(year=curyear - 1, month=month, day=day,
+                                 hour=hr_, minute=mn_, second=sc_)
 
     pname = ents[4].split('[')[0]
     if pname != 'sshd':
@@ -132,7 +132,7 @@ def analyze_single_line_ssh(line):
     elif 'pam_unix' not in ents[5]:
         date, host, user = None, None, None
     else:
-        host, user = 2*['']
+        host, user = 2 * ['']
         for ent in ents[6:]:
             if 'rhost' in ent:
                 host = ent.replace('rhost=', '')
@@ -154,7 +154,7 @@ def analyze_single_file_ssh(infile):
 def parse_apache_time_str(timestr):
     """ Parse apache time string """
     day = int(timestr[:2])
-    mon = int(MONTH_NAMES.index(timestr[3:6]))+1
+    mon = int(MONTH_NAMES.index(timestr[3:6])) + 1
     year = int(timestr[7:11])
     hour = int(timestr[12:14])
     minute = int(timestr[15:17])
@@ -338,8 +338,8 @@ def plot_time_access(engine, table, title):
 
     df_['Week'] = df_['Datetime'].apply(lambda d: d.isocalendar()[1])
     df_['Date'] = df_['Datetime'].apply(lambda d: d.date())
-    df_['Hours'] = df_['Datetime'].apply(lambda x: (x.hour + x.minute/60.
-                                                    + x.second/3600.))
+    df_['Hours'] = df_['Datetime'].apply(lambda x: (x.hour + x.minute / 60.
+                                                    + x.second / 3600.))
     df_['Weekdays'] = df_['Datetime'].apply(lambda x: x.weekday())
 
     print(table, title)
