@@ -244,6 +244,11 @@ def analyze_files(engine, test=False):
                         db_.add(HostCountry(host=hst, code=code))
                         print(hst, code)
                         db_.commit()
+                    else:
+                        host_country[hst] = 'EU'
+                        db_.add(HostCountry(host=hst, code='EU'))
+                        print(hst, 'EU')
+                        db_.commit()
                 db_.add(table(datetime=dt_, host=hst, id=maxid))
                 maxid += 1
                 number_analyzed += 1
