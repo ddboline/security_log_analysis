@@ -11,7 +11,7 @@ from setuptools import setup
 
 setup(
     name='security_log_analysis',
-    version='0.0.3.3',
+    version='0.0.3.4',
     author='Daniel Boline',
     author_email='ddboline@gmail.com',
     description='security_log_analysis',
@@ -23,6 +23,6 @@ setup(
     package_dir={'security_log_analysis': 'security_log_analysis'},
     package_data={'security_log_analysis': ['templates/*.html']},
     entry_points={'console_scripts':
-            ['security_log_parse = security_log_analysis.cli:run_parse',
-             'security_log_analyze = security_log_analysis.cli:run_analyze']}
+            ['security-log-parse = security_log_analysis.cli:run_parse',
+             'security-log-analyze = security_log_analysis.cli:run_analyze']}
 )
