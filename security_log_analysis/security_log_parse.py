@@ -17,6 +17,7 @@ from socket import gethostbyname
 from subprocess import Popen, PIPE
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
+from sqlalchemy.exc import IntegrityError
 
 from .db_tables import (CountryCode, HostCountry, SSHLog, SSHLogCloud,
                         ApacheLog, ApacheLogCloud)
@@ -206,9 +207,12 @@ def analyze_files(engine, test=False):
                         hst, country_code_list=country_code)
                     if code:
                         host_country[hst] = code
-                        db_.add(HostCountry(host=hst, code=code))
-                        print(hst, code)
-                        db_.commit()
+                        try:
+                            db_.add(HostCountry(host=hst, code=code))
+                            print(hst, code)
+                            db_.commit()
+                        except sqlalchemy.exc.IntegrityError:
+                            pass
                 db_.add(table(datetime=dt_, host=hst, username=usr[:15],
                               id=maxid))
                 maxid += 1
