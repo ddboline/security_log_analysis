@@ -12,7 +12,7 @@ import glob
 import gzip
 import time
 import datetime
-from socket import gethostbyname
+from socket import gethostbyname, gaierror
 #import logging
 from subprocess import Popen, PIPE
 from sqlalchemy.orm import sessionmaker
@@ -88,12 +88,19 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
                 country = 'DE'
             elif hostname.endswith('.eu'):
                 country = 'FR'
+            elif 'jp-east' in hostname:
+                country = 'JP'
         return country
 
     country = _worker(hostname)
 
     if not country:
-        country = _worker(gethostbyname(hostname))
+        try:
+            tmp = gethostbyname(hostname)
+            country = _worker(tmp)
+        except gaierror:
+            print('failed host %s' % hostname)
+            raise
 
     if not country and hostname:
         return find_originating_country('.'.join(hostname.split('.')[1:]),
