@@ -33,17 +33,21 @@ def test_analyze_single_line_ssh():
     line = 'Sep 27 10:42:45 dilepton-tower sshd[31950]: ' + \
            'pam_unix(sshd:auth): authentication failure; logname= uid=0 ' + \
            'euid=0 tty=ssh ruser= rhost=218.87.111.108  user=root'
-    assert analyze_single_line_ssh(line) == (datetime.datetime(2015, 9, 27, 10,
+    result = analyze_single_line_ssh(line)
+    print(result)
+    assert analyze_single_line_ssh(line) == (datetime.datetime(2016, 9, 27, 10,
                                                                42, 45),
                                              '218.87.111.108', 'root')
 
 
 def test_analyze_single_file_ssh():
     result = [
-        (datetime.datetime(2015, 9, 27, 10, 42, 45), '218.87.111.108', 'root'),
-        (datetime.datetime(2015, 9, 27, 10, 43, 3), '218.87.111.108', 'root')]
+        (datetime.datetime(2016, 9, 27, 10, 42, 45), '218.87.111.108', 'root'),
+        (datetime.datetime(2016, 9, 27, 10, 43, 3), '218.87.111.108', 'root')]
     with open('tests/test_ssh.log') as infile:
         output = [x for x in analyze_single_file_ssh(infile)]
+    print(output)
+    print(result)
     assert output == result
 
 
