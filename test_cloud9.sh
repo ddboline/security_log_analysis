@@ -1,3 +1,3 @@
 #!/bin/bash
 
-nosetests --with-coverage --cover-package=security_log_analysis ./tests/*.py security_log_analysis/*.py
+py.test --cov=security_log_analysis security_log_analysis/*.py tests/*.py
