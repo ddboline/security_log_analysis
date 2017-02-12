@@ -13,25 +13,20 @@ import gzip
 import time
 import datetime
 from socket import gethostbyname, gaierror
-#import logging
 from subprocess import Popen, PIPE
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
 from sqlalchemy.exc import IntegrityError
 
-from .db_tables import (CountryCode, HostCountry, SSHLog, SSHLogCloud,
-                        ApacheLog, ApacheLogCloud)
+from .db_tables import (CountryCode, HostCountry, SSHLog, SSHLogCloud, ApacheLog, ApacheLogCloud)
 from .util import HOSTNAME
 
-#_logger = logging.getLogger(__name__)
-
-MONTH_NAMES = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep',
-               'Oct', 'Nov', 'Dec')
+MONTH_NAMES = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
 
 OWN_HOSTS = ('67.84.145.194', '24.44.92.189', '129.49.56.207', '75.72.228.84',
              'ddbolineathome.mooo.com', 'ool-182c5cbd.dyn.optonline.net',
-             'dboline.physics.sunysb.edu', '127.0.0.1', '208.105.40.20',
-             '192.168.1.1', '108.14.33.127', '52.7.20.216', '68.47.108.255')
+             'dboline.physics.sunysb.edu', '127.0.0.1', '208.105.40.20', '192.168.1.1',
+             '108.14.33.127', '52.7.20.216', '68.47.108.255')
 
 
 def find_originating_country(hostname, country_code_list=None, orig_host=None):
@@ -48,8 +43,7 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
         if len(ents) > 2 and country_code_list and ents[-1].upper() in \
                 country_code_list:
             return ents[-1].upper()
-        pipe = Popen('whois %s' % hostname, shell=True, stdin=PIPE,
-                     stdout=PIPE, close_fds=True)
+        pipe = Popen('whois %s' % hostname, shell=True, stdin=PIPE, stdout=PIPE, close_fds=True)
         wfile = pipe.stdout
         output = [l for l in wfile]
         pipe.wait()
@@ -61,8 +55,7 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
             time.sleep(10)
             print(hostname)
             return find_originating_country(
-                hostname, country_code_list=country_code_list,
-                orig_host=orig_host)
+                hostname, country_code_list=country_code_list, orig_host=orig_host)
         country = None
         for line in output.split('\n'):
             if 'country' in line or 'Country' in line:
@@ -103,14 +96,17 @@ def find_originating_country(hostname, country_code_list=None, orig_host=None):
             raise
 
     if not country and hostname:
-        return find_originating_country('.'.join(hostname.split('.')[1:]),
-                                        country_code_list=country_code_list,
-                                        orig_host=orig_host)
+        return find_originating_country(
+            '.'.join(hostname.split('.')[1:]),
+            country_code_list=country_code_list,
+            orig_host=orig_host)
     return country
 
 
 def analyze_single_line_ssh(line):
     """ Analyze single line from ssh log file """
+    if hasattr(line, 'decode'):
+        line = line.decode(errors='ignore')
     if 'pam_unix' not in line and 'Invalid user' not in line:
         return None, None, None
     ents = line.split()
@@ -123,11 +119,11 @@ def analyze_single_line_ssh(line):
     curmonth = datetime.datetime.now().month
     curyear = datetime.datetime.now().year
     if month <= curmonth:
-        date = datetime.datetime(year=curyear, month=month, day=day, hour=hr_,
-                                 minute=mn_, second=sc_)
+        date = datetime.datetime(
+            year=curyear, month=month, day=day, hour=hr_, minute=mn_, second=sc_)
     else:
-        date = datetime.datetime(year=curyear - 1, month=month, day=day,
-                                 hour=hr_, minute=mn_, second=sc_)
+        date = datetime.datetime(
+            year=curyear - 1, month=month, day=day, hour=hr_, minute=mn_, second=sc_)
 
     pname = ents[4].split('[')[0]
     if pname != 'sshd':
@@ -167,13 +163,14 @@ def parse_apache_time_str(timestr):
     hour = int(timestr[12:14])
     minute = int(timestr[15:17])
     second = int(timestr[18:20])
-    return datetime.datetime(year=year, month=mon, day=day, hour=hour,
-                             minute=minute, second=second)
+    return datetime.datetime(year=year, month=mon, day=day, hour=hour, minute=minute, second=second)
 
 
 def analyze_single_file_apache(infile):
     """ Analyze single line of apache log file """
     for line in infile:
+        if hasattr(line, 'decode'):
+            line = line.decode(errors='ignore')
         hst = line.split()[0]
         dt_ = parse_apache_time_str(line.split()[3].replace('[', ''))
         if hst in OWN_HOSTS:
@@ -210,8 +207,7 @@ def analyze_files(engine, test=False):
                 if maxdt and dt_ <= maxdt:
                     continue
                 if hst not in host_country:
-                    code = find_originating_country(
-                        hst, country_code_list=country_code)
+                    code = find_originating_country(hst, country_code_list=country_code)
                     if code:
                         host_country[hst] = code
                         try:
@@ -220,8 +216,7 @@ def analyze_files(engine, test=False):
                             db_.commit()
                         except sqlalchemy.exc.IntegrityError:
                             pass
-                db_.add(table(datetime=dt_, host=hst, username=usr[:15],
-                              id=maxid))
+                db_.add(table(datetime=dt_, host=hst, username=usr[:15], id=maxid))
                 maxid += 1
                 number_analyzed += 1
                 db_.commit()
@@ -248,8 +243,7 @@ def analyze_files(engine, test=False):
                 if maxdt and dt_ <= maxdt:
                     continue
                 if hst not in host_country:
-                    code = find_originating_country(
-                        hst, country_code_list=country_code)
+                    code = find_originating_country(hst, country_code_list=country_code)
                     if code:
                         host_country[hst] = code
                         db_.add(HostCountry(host=hst, code=code))
@@ -315,8 +309,7 @@ def fill_country_plot(engine, script_path):
     con = engine.connect()
 
     with open(outfname, 'w') as output:
-        with open('%s/templates/COUNTRY_TEMPLATE.html' % script_path,
-                  'r') as inpfile:
+        with open('%s/templates/COUNTRY_TEMPLATE.html' % script_path, 'r') as inpfile:
             for line in inpfile:
                 if 'PUTLISTOFCOUNTRIESANDATTEMPTSHERE' in line:
                     cmd = 'select country, count from %s;' % table
@@ -349,22 +342,19 @@ def plot_time_access(engine, table, title):
 
     df_['Week'] = df_['Datetime'].apply(lambda d: d.isocalendar()[1])
     df_['Date'] = df_['Datetime'].apply(lambda d: d.date())
-    df_['Hours'] = df_['Datetime'].apply(lambda x: (x.hour + x.minute / 60.
-                                                    + x.second / 3600.))
+    df_['Hours'] = df_['Datetime'].apply(lambda x: (x.hour + x.minute / 60. + x.second / 3600.))
     df_['Weekdays'] = df_['Datetime'].apply(lambda x: x.weekday())
 
     print(table, title)
     print(df_.head())
 
     sec = df_['Week'].values
-    plt.hist(sec, bins=np.linspace(0, 53, 53),
-             histtype='step')
+    plt.hist(sec, bins=np.linspace(0, 53, 53), histtype='step')
     plt.savefig('%s_week.png' % title, format='png')
     plt.clf()
 
     sec = df_['Hours'].values
-    plt.hist(sec, bins=np.linspace(0, 24, 24),
-             histtype='step')
+    plt.hist(sec, bins=np.linspace(0, 24, 24), histtype='step')
     plt.savefig('%s_hour.png' % title, format='png')
     plt.clf()
 

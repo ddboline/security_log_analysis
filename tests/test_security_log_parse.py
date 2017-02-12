@@ -7,12 +7,11 @@ Created on Wed Sep 30 07:32:45 2015
 
 import datetime
 from security_log_analysis.db_tables import (create_tables, delete_tables)
-from security_log_analysis.util import (OpenPostgreSQLsshTunnel,
-                                        create_db_engine)
+from security_log_analysis.util import (OpenPostgreSQLsshTunnel, create_db_engine)
 from security_log_analysis.security_log_parse import (
-    find_originating_country, analyze_single_line_ssh,
-    analyze_single_file_ssh, parse_apache_time_str, analyze_single_file_apache,
-    read_country_code, read_host_country, analyze_files)
+    find_originating_country, analyze_single_line_ssh, analyze_single_file_ssh,
+    parse_apache_time_str, analyze_single_file_apache, read_country_code, read_host_country,
+    analyze_files)
 
 
 def test_find_originating_country():
@@ -21,8 +20,7 @@ def test_find_originating_country():
         country_list = read_country_code(engine)
 
     host = 'host-219-235-1-84.iphost.gotonets.com'
-    country = find_originating_country(hostname=host,
-                                       country_code_list=country_list)
+    country = find_originating_country(hostname=host, country_code_list=country_list)
     assert country == 'CN'
 
 
@@ -35,15 +33,13 @@ def test_analyze_single_line_ssh():
            'euid=0 tty=ssh ruser= rhost=218.87.111.108  user=root'
     result = analyze_single_line_ssh(line)
     print(result)
-    assert analyze_single_line_ssh(line) == (datetime.datetime(2016, 9, 27, 10,
-                                                               42, 45),
+    assert analyze_single_line_ssh(line) == (datetime.datetime(2016, 9, 27, 10, 42, 45),
                                              '218.87.111.108', 'root')
 
 
 def test_analyze_single_file_ssh():
-    result = [
-        (datetime.datetime(2016, 9, 27, 10, 42, 45), '218.87.111.108', 'root'),
-        (datetime.datetime(2016, 9, 27, 10, 43, 3), '218.87.111.108', 'root')]
+    result = [(datetime.datetime(2016, 9, 27, 10, 42, 45), '218.87.111.108', 'root'),
+              (datetime.datetime(2016, 9, 27, 10, 43, 3), '218.87.111.108', 'root')]
     with open('tests/test_ssh.log') as infile:
         output = [x for x in analyze_single_file_ssh(infile)]
     print(output)

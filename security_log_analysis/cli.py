@@ -6,12 +6,9 @@ Command Line Interface
 from __future__ import division, print_function, absolute_import
 
 import security_log_analysis
-from security_log_analysis.security_log_parse import (analyze_files,
-                                                      fill_country_plot,
-                                                      plot_time_access,
-                                                      local_remote_comparison)
-from security_log_analysis.util import (OpenPostgreSQLsshTunnel,
-                                        create_db_engine)
+from security_log_analysis.security_log_parse import (analyze_files, fill_country_plot,
+                                                      plot_time_access, local_remote_comparison)
+from security_log_analysis.util import (OpenPostgreSQLsshTunnel, create_db_engine)
 
 
 def run_parse():
@@ -35,8 +32,7 @@ def run_analyze(data_path=security_log_analysis.__path__[0]):
     with OpenPostgreSQLsshTunnel(port=5433) as pport:
         engine = create_db_engine(port=pport)
         fill_country_plot(engine, data_path)
-        for table in ('ssh_log', 'ssh_log_cloud', 'apache_log',
-                      'apache_log_cloud'):
+        for table in ('ssh_log', 'ssh_log_cloud', 'apache_log', 'apache_log_cloud'):
             plot_time_access(engine, table, table)
         print('\nssh local remote comparison')
         local_remote_comparison(engine)

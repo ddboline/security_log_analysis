@@ -17,6 +17,7 @@ HOSTNAME = os.uname()[1]
 
 class OpenPostgreSQLsshTunnel(object):
     """ Class to let us open an ssh tunnel, then close it when done """
+
     def __init__(self, port=5432):
         self.tunnel_process = 0
         self.postgre_port = 5432

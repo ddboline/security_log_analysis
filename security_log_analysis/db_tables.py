@@ -5,7 +5,6 @@
 from sqlalchemy import (BigInteger, Column, DateTime, String)
 from sqlalchemy.ext.declarative import declarative_base
 
-
 Base = declarative_base()
 
 
