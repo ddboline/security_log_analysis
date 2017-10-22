@@ -9,9 +9,8 @@ from __future__ import (absolute_import, division, print_function)
 import sys
 from setuptools import setup
 
-console_scripts = (
-    ('security-log-parse', 'security_log_analysis.cli:run_parse'),
-    ('security-log-analyze', 'security_log_analysis.cli:run_analyze'))
+console_scripts = (('security-log-parse', 'security_log_analysis.cli:run_parse'),
+                   ('security-log-analyze', 'security_log_analysis.cli:run_analyze'))
 
 if sys.version_info.major == 2:
     console_scripts = ['%s = %s' % (x, y) for x, y in console_scripts]
