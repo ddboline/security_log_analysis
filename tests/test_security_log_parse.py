@@ -33,13 +33,13 @@ def test_analyze_single_line_ssh():
            'euid=0 tty=ssh ruser= rhost=218.87.111.108  user=root'
     result = analyze_single_line_ssh(line)
     print(result)
-    assert analyze_single_line_ssh(line) == (datetime.datetime(2016, 9, 27, 10, 42, 45),
+    assert analyze_single_line_ssh(line) == (datetime.datetime(2017, 9, 27, 10, 42, 45),
                                              '218.87.111.108', 'root')
 
 
 def test_analyze_single_file_ssh():
-    result = [(datetime.datetime(2016, 9, 27, 10, 42, 45), '218.87.111.108', 'root'),
-              (datetime.datetime(2016, 9, 27, 10, 43, 3), '218.87.111.108', 'root')]
+    result = [(datetime.datetime(2017, 9, 27, 10, 42, 45), '218.87.111.108', 'root'),
+              (datetime.datetime(2017, 9, 27, 10, 43, 3), '218.87.111.108', 'root')]
     with open('tests/test_ssh.log') as infile:
         output = [x for x in analyze_single_file_ssh(infile)]
     print(output)
