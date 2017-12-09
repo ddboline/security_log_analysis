@@ -214,7 +214,7 @@ def analyze_files(engine, test=False):
                             db_.add(HostCountry(host=hst, code=code))
                             print(hst, code)
                             db_.commit()
-                        except sqlalchemy.exc.IntegrityError:
+                        except IntegrityError:
                             pass
                 db_.add(table(datetime=dt_, host=hst, username=usr[:15], id=maxid))
                 maxid += 1
