@@ -20,7 +20,7 @@ else:
 
 setup(
     name='security_log_analysis',
-    version='0.0.3.8',
+    version='0.0.3.9',
     author='Daniel Boline',
     author_email='ddboline@gmail.com',
     description='security_log_analysis',
