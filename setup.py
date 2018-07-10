@@ -12,15 +12,14 @@ from setuptools import setup
 console_scripts = (('security-log-parse', 'security_log_analysis.cli:run_parse'),
                    ('security-log-analyze', 'security_log_analysis.cli:run_analyze'))
 
-if sys.version_info.major == 2:
-    console_scripts = ['%s = %s' % (x, y) for x, y in console_scripts]
-else:
-    v = sys.version_info.major
-    console_scripts = ['%s%s = %s' % (x, v, y) for x, y in console_scripts]
+console_scripts = ['%s = %s' % (x, y) for x, y in console_scripts]
+
+v = sys.version_info.major
+console_scripts.extend('%s%s = %s' % (x, v, y) for x, y in console_scripts)
 
 setup(
     name='security_log_analysis',
-    version='0.0.3.9',
+    version='0.0.4.0',
     author='Daniel Boline',
     author_email='ddboline@gmail.com',
     description='security_log_analysis',
