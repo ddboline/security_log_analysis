@@ -9,13 +9,13 @@ from __future__ import (absolute_import, division, print_function)
 import sys
 from setuptools import setup
 
-console_scripts = (('security-log-parse', 'security_log_analysis.cli:run_parse'),
+console_scripts_ = (('security-log-parse', 'security_log_analysis.cli:run_parse'),
                    ('security-log-analyze', 'security_log_analysis.cli:run_analyze'))
 
-console_scripts = ['%s = %s' % (x, y) for x, y in console_scripts]
+console_scripts = ['%s = %s' % (x, y) for x, y in console_scripts_]
 
 v = sys.version_info.major
-console_scripts.extend('%s%s = %s' % (x, v, y) for x, y in console_scripts)
+console_scripts.extend('%s%s = %s' % (x, v, y) for x, y in console_scripts_)
 
 setup(
     name='security_log_analysis',
