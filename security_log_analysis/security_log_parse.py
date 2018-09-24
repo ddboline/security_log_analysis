@@ -214,8 +214,8 @@ def analyze_files(engine, test=False):
                             db_.add(HostCountry(host=hst, code=code))
                             print(hst, code)
                             db_.commit()
-                        except IntegrityError:
-                            pass
+                        except IntegrityError as exc:
+                            print('got error', exc)
                 db_.add(table(datetime=dt_, host=hst, username=usr[:15], id=maxid))
                 maxid += 1
                 number_analyzed += 1
