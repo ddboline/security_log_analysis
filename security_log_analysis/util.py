@@ -27,7 +27,7 @@ class OpenPostgreSQLsshTunnel(object):
         if HOSTNAME != 'dilepton-tower':
             self.postgre_port = self.remote_port
             _cmd = 'ssh -N -L localhost:%d' % self.remote_port + \
-                   ':localhost:5432 ddboline@ddbolineathome.mooo.com'
+                   ':localhost:5432 ddboline@home.ddboline.net'
             args = shlex.split(_cmd)
             self.tunnel_process = Popen(args, shell=False)
             time.sleep(5)

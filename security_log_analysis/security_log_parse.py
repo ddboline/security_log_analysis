@@ -24,7 +24,7 @@ from .util import HOSTNAME
 MONTH_NAMES = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
 
 OWN_HOSTS = ('67.84.145.194', '24.44.92.189', '129.49.56.207', '75.72.228.84',
-             'ddbolineathome.mooo.com', 'ool-182c5cbd.dyn.optonline.net',
+             'home.ddboline.net', 'ool-182c5cbd.dyn.optonline.net',
              'dboline.physics.sunysb.edu', '127.0.0.1', '208.105.40.20', '192.168.1.1',
              '108.14.33.127', '52.7.20.216', '68.47.108.255')
 
